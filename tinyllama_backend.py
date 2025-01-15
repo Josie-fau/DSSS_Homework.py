@@ -23,15 +23,14 @@ def generate_response(prompt: str):
     try:
         input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
         attention_mask = (input_ids != tokenizer.pad_token_id).type(torch.uint8).to(device)
-
         output_ids = model.generate(
             input_ids,
             attention_mask=attention_mask,
             max_length=100,
             num_return_sequences=1,
-            temperature=0.9,
-            top_p=0.95,
-            do_sample=True,
+            temperature=0.9,  # Slightly higher temperature for more diversity
+            top_p=0.95,       # Higher top_p to explore more options
+            do_sample=True,   # Enable sampling
             pad_token_id=tokenizer.eos_token_id
         )
         response = tokenizer.decode(output_ids[0], skip_special_tokens=True)
@@ -39,6 +38,7 @@ def generate_response(prompt: str):
     except Exception as e:
         logger.error(f"Error during response generation: {e}")
         return "Sorry, the model could not process your request."
+
 @app.route('/llm', methods=['POST'])
 def llm_endpoint():
     try:
