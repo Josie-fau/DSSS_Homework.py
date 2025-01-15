@@ -47,14 +47,9 @@ def llm_endpoint():
             return jsonify({"error": "Invalid input. 'message' field is required."}), 400
 
         user_message = data["message"]
-
-        # Log the input for debugging purposes
         logger.info(f"Received message: {user_message}")
-
-        # Generate response
         response = generate_response(user_message)
         return jsonify({"response": response})
-
     except Exception as e:
         logger.error(f"Error in LLM endpoint: {e}")
         return jsonify({"error": "An error occurred while processing your request."}), 500
@@ -82,7 +77,3 @@ def check():
 if __name__ == "__main__":
     # Use a customizable port and enable production-ready features
     app.run(threaded=True)
-
-
-
-
