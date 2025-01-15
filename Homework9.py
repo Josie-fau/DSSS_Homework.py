@@ -15,16 +15,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         print(f"Received non-text message: {update}")
 
+
 def process_message(message):
-    backend_url = "http://127.0.0.1:5000/llm"
+    backend_url = "http://127.0.0.1:5000/llm"  # Make sure this is correct
     try:
         response = requests.post(backend_url, json={"message": message})
-        if response.status_code == 200:
-            return response.json().get("response", "Sorry, I couldn't process that.")
-        else:
-            return f"Error: {response.status_code} - {response.text}"
+        model_response = response.json().get("response", "Sorry, I couldn't process that.")
+
+        if model_response.lower().startswith(message.lower()):
+            model_response = model_response[len(message):].strip()
+
+        return model_response
     except Exception as e:
-        logging.error(f"Error during request: {e}")
         return f"Error: {e}"
 
 
